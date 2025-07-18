@@ -12,7 +12,7 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.CORS_ORIGIN || true, // 使用环境变量配置允许的来源
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Version'], // 添加 version 头部
+    allowedHeaders: true, // 允许所有头部
     credentials: true, // 允许携带凭证
   });
 
