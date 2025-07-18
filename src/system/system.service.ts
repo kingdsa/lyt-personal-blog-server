@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThanOrEqual } from 'typeorm';
-import { AccessLog } from '../entities/access-log.entity';
+import { AccessLog } from '../entities';
 
 export interface CreateAccessLogDto {
   ip: string;
