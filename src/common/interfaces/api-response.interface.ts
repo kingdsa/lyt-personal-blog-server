@@ -82,21 +82,6 @@ export interface PaginationData<T = any> {
    * 总数
    */
   total: number;
-
-  /**
-   * 当前页码
-   */
-  page: number;
-
-  /**
-   * 每页数量
-   */
-  pageSize: number;
-
-  /**
-   * 总页数
-   */
-  totalPages: number;
 }
 
 /**

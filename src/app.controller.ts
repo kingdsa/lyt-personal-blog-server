@@ -50,8 +50,6 @@ export class AppController {
     return ResponseUtil.pagination(
       mockData,
       100, // 总数
-      1, // 当前页
-      10, // 每页数量
       '获取用户列表成功',
     );
   }

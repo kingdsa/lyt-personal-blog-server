@@ -78,19 +78,12 @@ export class ResponseUtil {
   static pagination<T = any>(
     list: T[],
     total: number,
-    page: number,
-    pageSize: number,
     msg: string = '查询成功',
     requestId?: string,
   ): PaginationResponse<T> {
-    const totalPages = Math.ceil(total / pageSize);
-
     const paginationData: PaginationData<T> = {
       list,
       total,
-      page,
-      pageSize,
-      totalPages,
     };
 
     return {
