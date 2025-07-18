@@ -42,7 +42,7 @@ async function bootstrap() {
       }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: true, // 允许所有头部
+    allowedHeaders: ['Content-Type', 'Authorization', 'version'], // 明确允许的头部
     credentials: true, // 允许携带凭证
   });
 
