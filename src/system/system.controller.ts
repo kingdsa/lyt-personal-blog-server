@@ -50,14 +50,37 @@ export class SystemController {
     };
   }
 
+  private getClientIp(req: Request): string {
+    // 优先从代理头中获取真实IP
+    const forwarded = req.headers['x-forwarded-for'];
+    const realIp = req.headers['x-real-ip'];
+
+    if (forwarded) {
+      // x-forwarded-for 可能包含多个IP，取第一个
+      const ips = Array.isArray(forwarded) ? forwarded[0] : forwarded;
+      return ips.split(',')[0].trim();
+    }
+
+    if (realIp) {
+      return Array.isArray(realIp) ? realIp[0] : realIp;
+    }
+
+    // 如果是IPv6的localhost，转换为IPv4
+    if (req.ip === '::1') {
+      return '127.0.0.1';
+    }
+
+    return req.ip || req.connection.remoteAddress || 'unknown';
+  }
+
   @Post('access-logs')
   async createAccessLog(
     @Req() req: Request,
     @Body() body?: Partial<CreateAccessLogDto>,
   ): Promise<ApiResponse> {
-    // 从请求头和请求对象中获取访问日志信息
+    // 使用优化的IP获取方法
     const createAccessLogDto: CreateAccessLogDto = {
-      ip: req.ip || req.connection.remoteAddress || 'unknown',
+      ip: this.getClientIp(req),
       method: req.method,
       path: req.path,
       params: req.query ? JSON.stringify(req.query) : undefined,
@@ -120,5 +143,22 @@ export class SystemController {
     if (ua.includes('opera')) return 'Opera';
 
     return undefined;
+  }
+
+  @Get('test-ip')
+  testIp(@Req() req: Request): ApiResponse {
+    const ipInfo = {
+      'req.ip': req.ip,
+      'req.connection.remoteAddress': req.connection.remoteAddress,
+      'x-forwarded-for': req.headers['x-forwarded-for'],
+      'x-real-ip': req.headers['x-real-ip'],
+      clientIp: this.getClientIp(req),
+    };
+
+    return {
+      code: ResponseCode.SUCCESS,
+      msg: 'IP 信息获取成功',
+      data: ipInfo,
+    };
   }
 }
