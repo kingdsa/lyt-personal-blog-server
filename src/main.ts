@@ -8,11 +8,11 @@ async function bootstrap() {
   // 信任代理服务器，获取真实IP
   (app.getHttpAdapter().getInstance() as Express).set('trust proxy', true);
 
-  // 启用跨域支持，允许所有来源
+  // 启用跨域支持
   app.enableCors({
-    origin: true, // 允许所有来源
+    origin: process.env.CORS_ORIGIN || true, // 使用环境变量配置允许的来源
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Version'], // 添加 version 头部
     credentials: true, // 允许携带凭证
   });
 
