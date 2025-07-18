@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CommonModule } from './common';
+import { SystemModule } from './system/system.module';
 import { getDatabaseConfig } from './config/database.config';
 import { validationSchema } from './config/config.validation';
 
@@ -27,6 +28,7 @@ import { validationSchema } from './config/config.validation';
       inject: [ConfigService],
     }),
     CommonModule,
+    SystemModule,
   ],
   controllers: [AppController],
   providers: [AppService],
