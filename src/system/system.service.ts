@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThanOrEqual } from 'typeorm';
 import { AccessLog } from '../entities';
+import { IpGeolocationUtil } from '../common/utils/ip-geolocation.util';
 
 export interface CreateAccessLogDto {
   ip: string;
@@ -97,7 +98,36 @@ export class SystemService {
   }
 
   async createAccessLog(createAccessLogDto: CreateAccessLogDto) {
-    const accessLog = this.accessLogRepository.create(createAccessLogDto);
-    return await this.accessLogRepository.save(accessLog);
+    try {
+      // 获取IP地理位置信息
+      const ipGeolocationUtil = IpGeolocationUtil.getInstance();
+      const geoInfo = await ipGeolocationUtil.getIpGeolocation(
+        createAccessLogDto.ip,
+      );
+
+      // 合并地理位置信息到DTO
+      const enrichedDto = {
+        ...createAccessLogDto,
+        country: geoInfo.country || createAccessLogDto.country,
+        region: geoInfo.regionName || createAccessLogDto.region,
+        province: geoInfo.regionName || createAccessLogDto.province, // 使用regionName作为省份
+        city: geoInfo.city || createAccessLogDto.city,
+      };
+
+      const accessLog = this.accessLogRepository.create(enrichedDto);
+      const savedLog = await this.accessLogRepository.save(accessLog);
+
+      console.log(
+        `[AccessLog] 创建访问日志成功: ${createAccessLogDto.ip} -> ${geoInfo.country}, ${geoInfo.city}`,
+      );
+
+      return savedLog;
+    } catch (error) {
+      console.error('[AccessLog] 创建访问日志失败:', error);
+
+      // 如果IP地理位置获取失败，仍然创建访问日志，只是不包含地理信息
+      const accessLog = this.accessLogRepository.create(createAccessLogDto);
+      return await this.accessLogRepository.save(accessLog);
+    }
   }
 }
