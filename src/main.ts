@@ -20,6 +20,7 @@ async function bootstrap() {
         /^https:\/\/.*\.lyt-personal-blog\.pages\.dev$/,
         'http://localhost:3000',
         'http://localhost:5173',
+        'http://localhost:4002',
         'http://127.0.0.1:5173',
         'http://127.0.0.1:3000',
       ];
