@@ -1,9 +1,20 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import type { Express } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // 全局验证管道
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true, // 自动转换类型
+      whitelist: true, // 过滤掉DTO中未定义的属性
+      forbidNonWhitelisted: true, // 如果有未定义的属性则抛出错误
+      disableErrorMessages: false, // 是否禁用详细错误消息
+    }),
+  );
 
   // 信任代理服务器，获取真实IP
   (app.getHttpAdapter().getInstance() as Express).set('trust proxy', true);
