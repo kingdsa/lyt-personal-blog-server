@@ -12,3 +12,5 @@ export * from './filters/http-exception.filter';
 
 // 模块
 export * from './common.module';
+
+export * from './services/jwt.service';

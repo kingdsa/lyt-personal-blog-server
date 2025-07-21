@@ -5,10 +5,14 @@ import {
   ApiResponse,
   ResponseCode,
 } from '../common/interfaces/api-response.interface';
+import { CustomJwtService, JwtPayload } from '../common';
 
 @Controller('system')
 export class SystemController {
-  constructor(private readonly systemService: SystemService) {}
+  constructor(
+    private readonly systemService: SystemService,
+    private readonly jwtService: CustomJwtService,
+  ) {}
 
   @Get('access-logs')
   async getAccessLogs(
@@ -100,6 +104,60 @@ export class SystemController {
       msg: '创建访问日志成功',
       data: result,
     };
+  }
+
+  @Post('generate-token')
+  async generateToken(@Body() payload: JwtPayload): Promise<ApiResponse> {
+    try {
+      const tokenResult = await this.jwtService.generateToken(payload);
+      return {
+        code: ResponseCode.SUCCESS,
+        msg: 'Token生成成功',
+        data: tokenResult,
+      };
+    } catch {
+      return {
+        code: ResponseCode.INTERNAL_SERVER_ERROR,
+        msg: 'Token生成失败',
+        data: null,
+      };
+    }
+  }
+
+  @Post('verify-token')
+  async verifyToken(@Body() body: { token: string }): Promise<ApiResponse> {
+    try {
+      const payload = await this.jwtService.verifyToken(body.token);
+      return {
+        code: ResponseCode.SUCCESS,
+        msg: 'Token验证成功',
+        data: payload,
+      };
+    } catch {
+      return {
+        code: ResponseCode.UNAUTHORIZED,
+        msg: 'Token无效或已过期',
+        data: null,
+      };
+    }
+  }
+
+  @Post('decode-token')
+  decodeToken(@Body() body: { token: string }): ApiResponse {
+    try {
+      const payload = this.jwtService.decodeToken(body.token);
+      return {
+        code: ResponseCode.SUCCESS,
+        msg: 'Token解码成功',
+        data: payload,
+      };
+    } catch {
+      return {
+        code: ResponseCode.BAD_REQUEST,
+        msg: 'Token格式错误',
+        data: null,
+      };
+    }
   }
 
   private getDeviceType(userAgent?: string): string | undefined {
