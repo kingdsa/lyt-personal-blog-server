@@ -39,6 +39,7 @@ export class UserService {
       nickname: string;
       avatar?: string;
       role: 'admin' | 'user';
+      createdAt: Date;
     };
     token: string;
   }> {
@@ -88,6 +89,7 @@ export class UserService {
         nickname: user.nickname || '',
         avatar: user.avatar,
         role: user.role,
+        createdAt: user.createdAt,
       },
       token: tokenResult.accessToken,
     };
