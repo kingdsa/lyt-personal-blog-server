@@ -97,9 +97,9 @@ export class IpGeolocationUtil {
       // 返回默认值而不是抛出错误，确保不影响主要业务流程
       return {
         status: 'fail',
-        country: 'Unknown',
-        region: 'Unknown',
-        city: 'Unknown',
+        country: '',
+        region: '',
+        city: '',
         query: ip,
       };
     }
