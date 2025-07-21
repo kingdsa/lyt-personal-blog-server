@@ -2,18 +2,22 @@ import {
   Injectable,
   ConflictException,
   InternalServerErrorException,
+  UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
 import { createHash } from 'crypto';
 import { User } from '../entities/user/user.entity';
-import { RegisterDto } from './dto';
+import { RegisterDto, LoginDto } from './dto';
+import { CustomJwtService } from '../common/services/jwt.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly jwtService: CustomJwtService,
   ) {}
 
   /**
@@ -21,6 +25,72 @@ export class UserService {
    */
   private hashPassword(password: string): string {
     return createHash('md5').update(password).digest('hex');
+  }
+
+  /**
+   * 用户登录
+   */
+  async login(loginDto: LoginDto): Promise<{
+    message: string;
+    user: {
+      id: string;
+      username: string;
+      email: string;
+      nickname: string;
+      avatar?: string;
+      role: 'admin' | 'user';
+    };
+    token: string;
+  }> {
+    const { username, password } = loginDto;
+
+    // 查找用户
+    const user = await this.userRepository.findOne({
+      where: { username },
+    });
+
+    if (!user) {
+      throw new NotFoundException('用户不存在');
+    }
+
+    // 检查用户是否激活
+    if (!user.isActive) {
+      throw new UnauthorizedException('账户已被禁用');
+    }
+
+    // 验证密码
+    const hashedPassword = this.hashPassword(password);
+    if (user.password !== hashedPassword) {
+      throw new UnauthorizedException('用户名或密码错误');
+    }
+
+    // 更新最后登录时间
+    await this.userRepository.update(user.id, {
+      lastLoginAt: new Date(),
+    });
+
+    // 生成 JWT token
+    const tokenPayload = {
+      sub: user.id,
+      username: user.username,
+      roles: [user.role],
+    };
+
+    const tokenResult = await this.jwtService.generateToken(tokenPayload);
+
+    // 返回用户信息和 token
+    return {
+      message: '登录成功',
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        nickname: user.nickname || '',
+        avatar: user.avatar,
+        role: user.role,
+      },
+      token: tokenResult.accessToken,
+    };
   }
 
   /**
