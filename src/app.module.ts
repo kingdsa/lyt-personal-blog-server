@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { CommonModule } from './common';
 import { SystemModule } from './system/system.module';
 import { UserModule } from './user/user.module';
+import { DictionaryModule } from './dictionary/dictionary.module';
 import { TokenMiddleware } from './middleware';
 import { getDatabaseConfig } from './config/database.config';
 import { validationSchema } from './config/config.validation';
@@ -32,6 +33,7 @@ import { validationSchema } from './config/config.validation';
     CommonModule,
     SystemModule,
     UserModule,
+    DictionaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

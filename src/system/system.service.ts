@@ -57,7 +57,7 @@ export class SystemService {
     const [data, total] = await queryBuilder.getManyAndCount();
 
     return {
-      data,
+      list: data,
       total,
       page,
       limit,
