@@ -39,6 +39,8 @@ export class User extends BaseEntity {
     length: 255,
     nullable: true,
     comment: '头像',
+    default:
+      'https://lyt-oss-web.oss-cn-beijing.aliyuncs.com/default-avatar.png',
   })
   avatar?: string;
 
