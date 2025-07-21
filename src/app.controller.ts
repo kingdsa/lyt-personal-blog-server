@@ -14,12 +14,6 @@ import { ResponseUtil, ApiResponse, SuccessResponse } from './common';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    // 这将被响应拦截器自动包装成标准格式
-    return this.appService.getHello();
-  }
-
   @Get('success-example')
   getSuccessExample(): SuccessResponse<{ message: string; timestamp: number }> {
     // 手动使用ResponseUtil创建标准响应
