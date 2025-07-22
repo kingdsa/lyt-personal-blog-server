@@ -4,10 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CommonModule } from './common';
-import { SystemModule } from './system/system.module';
-import { UserModule } from './user/user.module';
-import { DictionaryModule } from './dictionary/index';
-import { DictionaryItemModule } from './dictionary/index';
+import { SystemModule } from './system';
+import { UserModule } from './user';
+import { DictionaryModule } from './dictionary';
 import { TokenMiddleware } from './middleware';
 import { getDatabaseConfig } from './config/database.config';
 import { validationSchema } from './config/config.validation';
@@ -35,7 +34,6 @@ import { validationSchema } from './config/config.validation';
     SystemModule,
     UserModule,
     DictionaryModule,
-    DictionaryItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],

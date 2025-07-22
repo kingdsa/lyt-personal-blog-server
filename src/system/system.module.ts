@@ -1,13 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { SystemController } from './system.controller';
-import { SystemService } from './system.service';
-import { AccessLog } from '../entities';
+import { AccessLogModule } from './access-log/access-log.module';
+import { TokenModule } from './token/token.module';
+import { CommonModule } from '../common/common.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AccessLog])],
-  controllers: [SystemController],
-  providers: [SystemService],
-  exports: [SystemService],
+  imports: [AccessLogModule, TokenModule, CommonModule],
+  exports: [AccessLogModule, TokenModule],
 })
 export class SystemModule {}

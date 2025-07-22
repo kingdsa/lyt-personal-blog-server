@@ -1,32 +1,33 @@
 import { Controller, Get, Post, Query, Body, Param, Req } from '@nestjs/common';
 import { Request } from 'express';
-import { SystemService, CreateAccessLogDto } from './system.service';
+import { AccessLogService } from './access-log.service';
+import { CreateAccessLogDto, GetAccessLogsQuery } from './dto';
 import {
   ApiResponse,
   ResponseCode,
-} from '../common/interfaces/api-response.interface';
-import { CustomJwtService, JwtPayload } from '../common';
+} from '../../common/interfaces/api-response.interface';
 
-@Controller('system')
-export class SystemController {
-  constructor(
-    private readonly systemService: SystemService,
-    private readonly jwtService: CustomJwtService,
-  ) {}
+@Controller('system/access-logs')
+export class AccessLogController {
+  constructor(private readonly accessLogService: AccessLogService) {}
 
-  @Get('access-logs')
+  @Get('stats')
+  async getStats(): Promise<ApiResponse> {
+    console.log('[Controller] 匹配到 stats 路由');
+    const result = await this.accessLogService.getStats();
+    return {
+      code: ResponseCode.SUCCESS,
+      msg: '获取统计信息成功',
+      data: result,
+    };
+  }
+
+  @Get()
   async getAccessLogs(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
-    @Query('ip') ip?: string,
-    @Query('path') path?: string,
+    @Query() query: GetAccessLogsQuery,
   ): Promise<ApiResponse> {
-    const result = await this.systemService.getAccessLogs({
-      page,
-      limit,
-      ip,
-      path,
-    });
+    console.log('[Controller] 匹配到列表查询路由，参数:', query);
+    const result = await this.accessLogService.getAccessLogs(query);
     return {
       code: ResponseCode.SUCCESS,
       msg: '获取访问日志成功',
@@ -34,22 +35,13 @@ export class SystemController {
     };
   }
 
-  @Get('access-logs/:id')
+  @Get(':id')
   async getAccessLogById(@Param('id') id: string): Promise<ApiResponse> {
-    const result = await this.systemService.getAccessLogById(id);
+    console.log('[Controller] 匹配到ID查询路由，ID:', id);
+    const result = await this.accessLogService.getAccessLogById(id);
     return {
       code: ResponseCode.SUCCESS,
       msg: '获取访问日志详情成功',
-      data: result,
-    };
-  }
-
-  @Get('stats')
-  async getStats(): Promise<ApiResponse> {
-    const result = await this.systemService.getStats();
-    return {
-      code: ResponseCode.SUCCESS,
-      msg: '获取统计信息成功',
       data: result,
     };
   }
@@ -77,7 +69,7 @@ export class SystemController {
     return req.ip || req.connection.remoteAddress || 'unknown';
   }
 
-  @Post('access-logs')
+  @Post()
   async createAccessLog(
     @Req() req: Request,
     @Body() body?: Partial<CreateAccessLogDto>,
@@ -98,66 +90,13 @@ export class SystemController {
       ...(body || {}),
     };
 
-    const result = await this.systemService.createAccessLog(createAccessLogDto);
+    const result =
+      await this.accessLogService.createAccessLog(createAccessLogDto);
     return {
       code: ResponseCode.SUCCESS,
       msg: '创建访问日志成功',
       data: result,
     };
-  }
-
-  @Post('generate-token')
-  async generateToken(@Body() payload: JwtPayload): Promise<ApiResponse> {
-    try {
-      const tokenResult = await this.jwtService.generateToken(payload);
-      return {
-        code: ResponseCode.SUCCESS,
-        msg: 'Token生成成功',
-        data: tokenResult,
-      };
-    } catch {
-      return {
-        code: ResponseCode.INTERNAL_SERVER_ERROR,
-        msg: 'Token生成失败',
-        data: null,
-      };
-    }
-  }
-
-  @Post('verify-token')
-  async verifyToken(@Body() body: { token: string }): Promise<ApiResponse> {
-    try {
-      const payload = await this.jwtService.verifyToken(body.token);
-      return {
-        code: ResponseCode.SUCCESS,
-        msg: 'Token验证成功',
-        data: payload,
-      };
-    } catch {
-      return {
-        code: ResponseCode.UNAUTHORIZED,
-        msg: 'Token无效或已过期',
-        data: null,
-      };
-    }
-  }
-
-  @Post('decode-token')
-  decodeToken(@Body() body: { token: string }): ApiResponse {
-    try {
-      const payload = this.jwtService.decodeToken(body.token);
-      return {
-        code: ResponseCode.SUCCESS,
-        msg: 'Token解码成功',
-        data: payload,
-      };
-    } catch {
-      return {
-        code: ResponseCode.BAD_REQUEST,
-        msg: 'Token格式错误',
-        data: null,
-      };
-    }
   }
 
   private getDeviceType(userAgent?: string): string | undefined {
@@ -201,22 +140,5 @@ export class SystemController {
     if (ua.includes('opera')) return 'Opera';
 
     return undefined;
-  }
-
-  @Get('test-ip')
-  testIp(@Req() req: Request): ApiResponse {
-    const ipInfo = {
-      'req.ip': req.ip,
-      'req.connection.remoteAddress': req.connection.remoteAddress,
-      'x-forwarded-for': req.headers['x-forwarded-for'],
-      'x-real-ip': req.headers['x-real-ip'],
-      clientIp: this.getClientIp(req),
-    };
-
-    return {
-      code: ResponseCode.SUCCESS,
-      msg: 'IP 信息获取成功',
-      data: ipInfo,
-    };
   }
 }

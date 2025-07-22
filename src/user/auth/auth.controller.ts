@@ -1,12 +1,12 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { UserService } from './user.service';
+import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto } from './dto';
-import { ResponseUtil } from '../common/utils';
-import { ApiResponse } from '../common';
+import { ResponseUtil } from '../../common/utils';
+import { ApiResponse } from '../../common';
 
-@Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+@Controller('user/auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
   /**
    * 用户注册
@@ -16,7 +16,7 @@ export class UserController {
   async register(
     @Body() registerDto: RegisterDto,
   ): Promise<ApiResponse<{ userId: string }>> {
-    const result = await this.userService.register(registerDto);
+    const result = await this.authService.register(registerDto);
 
     return ResponseUtil.success({ userId: result.userId }, result.message);
   }
@@ -39,7 +39,7 @@ export class UserController {
       token: string;
     }>
   > {
-    const result = await this.userService.login(loginDto);
+    const result = await this.authService.login(loginDto);
 
     return ResponseUtil.success(
       {
