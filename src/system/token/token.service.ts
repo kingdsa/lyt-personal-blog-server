@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CustomJwtService, JwtPayload } from '../../common';
+import { CustomJwtService, JwtPayload } from '@/common';
 import { GenerateTokenDto } from './dto';
 
 @Injectable()

@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
-import { DictionaryItem } from '../../entities/dictionary/dictionary-item.entity';
-import { Dictionary } from '../../entities/dictionary/dictionary.entity';
+import { DictionaryItem } from '@/entities/dictionary/dictionary-item.entity';
+import { Dictionary } from '@/entities/dictionary/dictionary.entity';
 import {
   CreateDictionaryItemDto,
   UpdateDictionaryItemDto,

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
-import { Dictionary } from '../../entities/dictionary/dictionary.entity';
+import { Dictionary } from '@/entities/dictionary/dictionary.entity';
 import {
   CreateDictionaryDto,
   UpdateDictionaryDto,

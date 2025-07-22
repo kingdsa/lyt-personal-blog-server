@@ -16,8 +16,8 @@ import {
   UpdateDictionaryItemDto,
   QueryDictionaryItemDto,
 } from './dto/index';
-import { ResponseUtil } from '../../common/utils';
-import { ApiResponse } from '../../common';
+import { ResponseUtil } from '@/common/utils';
+import { ApiResponse } from '@/common';
 
 @Controller('dictionary-item')
 export class DictionaryItemController {

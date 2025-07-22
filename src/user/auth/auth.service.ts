@@ -8,9 +8,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
 import { createHash } from 'crypto';
-import { User } from '../../entities/user/user.entity';
+import { User } from '@/entities/user/user.entity';
 import { RegisterDto, LoginDto } from './dto';
-import { CustomJwtService } from '../../common/services/jwt.service';
+import { CustomJwtService } from '@/common/services/jwt.service';
 
 @Injectable()
 export class AuthService {

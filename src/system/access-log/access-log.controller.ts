@@ -5,7 +5,7 @@ import { CreateAccessLogDto, GetAccessLogsQuery } from './dto';
 import {
   ApiResponse,
   ResponseCode,
-} from '../../common/interfaces/api-response.interface';
+} from '@/common/interfaces/api-response.interface';
 
 @Controller('system/access-logs')
 export class AccessLogController {

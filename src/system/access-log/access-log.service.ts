@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThanOrEqual } from 'typeorm';
-import { AccessLog } from '../../entities';
-import { IpGeolocationUtil } from '../../common/utils/ip-geolocation.util';
+import { AccessLog } from '@/entities';
+import { IpGeolocationUtil } from '@/common/utils/ip-geolocation.util';
 import { CreateAccessLogDto, GetAccessLogsQuery } from './dto';
 
 @Injectable()

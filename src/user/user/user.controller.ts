@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ResponseUtil } from '../../common/utils';
-import { ApiResponse, ResponseCode } from '../../common';
+import { ResponseUtil } from '@/common/utils';
+import { ApiResponse, ResponseCode } from '@/common';
 
 @Controller('user/user')
 export class UserController {

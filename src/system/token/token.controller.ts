@@ -4,7 +4,7 @@ import { GenerateTokenDto, VerifyTokenDto, DecodeTokenDto } from './dto';
 import {
   ApiResponse,
   ResponseCode,
-} from '../../common/interfaces/api-response.interface';
+} from '@/common/interfaces/api-response.interface';
 
 @Controller('system/token')
 export class TokenController {
