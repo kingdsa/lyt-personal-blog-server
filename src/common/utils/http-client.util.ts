@@ -49,11 +49,6 @@ export class HttpClient {
       (config: InternalAxiosRequestConfig) => {
         const startTime = Date.now();
         config.metadata = { startTime };
-
-        console.log(
-          `[HTTP] 🚀 ${config.method?.toUpperCase()} ${config.baseURL || ''}${config.url}`,
-        );
-
         return config;
       },
       (error: AxiosError) => {
@@ -65,14 +60,6 @@ export class HttpClient {
     // 响应拦截器
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => {
-        const endTime = Date.now();
-        const startTime = response.config.metadata?.startTime || endTime;
-        const duration = endTime - startTime;
-
-        console.log(
-          `[HTTP] ✅ ${response.status} ${response.config.method?.toUpperCase()} ${response.config.url} - ${duration}ms`,
-        );
-
         return response;
       },
       async (error: AxiosError) => {
@@ -99,9 +86,6 @@ export class HttpClient {
 
           if (config._retryCount < this.retryCount) {
             config._retryCount++;
-            console.log(
-              `[HTTP] 🔄 Retry ${config._retryCount}/${this.retryCount} for ${method} ${url}`,
-            );
 
             await this.delay(this.retryDelay * config._retryCount);
             return this.axiosInstance(config);

@@ -13,11 +13,6 @@ export class TokenMiddleware implements NestMiddleware {
   constructor(private readonly jwtService: CustomJwtService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    // 添加调试日志
-    console.log(
-      `🔍 TokenMiddleware执行 - Path: ${req.path}, Method: ${req.method}`,
-    );
-
     // 白名单路径 - 不需要token验证的接口
     const whiteList = ['/system/generate-token', '/'];
 

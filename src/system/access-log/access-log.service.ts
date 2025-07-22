@@ -13,12 +13,8 @@ export class AccessLogService {
   ) {}
 
   async getAccessLogs(query: GetAccessLogsQuery) {
-    console.log('[AccessLog] getAccessLogs 查询参数:', query);
-
     const { page, limit, ip, path } = query;
     const skip = (page - 1) * limit;
-
-    console.log('[AccessLog] 计算的分页参数:', { skip, limit });
 
     const queryBuilder =
       this.accessLogRepository.createQueryBuilder('accessLog');
@@ -32,19 +28,7 @@ export class AccessLogService {
     }
 
     queryBuilder.orderBy('accessLog.createdAt', 'DESC').skip(skip).take(limit);
-
-    console.log('[AccessLog] 生成的 SQL 查询:', queryBuilder.getSql());
-    console.log('[AccessLog] 查询参数:', queryBuilder.getParameters());
-
     const [data, total] = await queryBuilder.getManyAndCount();
-
-    console.log(
-      '[AccessLog] 查询结果 - total:',
-      total,
-      ', data length:',
-      data?.length,
-    );
-    console.log('[AccessLog] 原始数据:', data);
 
     const result = {
       list: data || [],
@@ -53,8 +37,6 @@ export class AccessLogService {
       limit,
       totalPages: Math.ceil(total / limit),
     };
-
-    console.log('[AccessLog] 最终返回结果:', result);
 
     return result;
   }
@@ -110,10 +92,6 @@ export class AccessLogService {
 
       const accessLog = this.accessLogRepository.create(enrichedDto);
       const savedLog = await this.accessLogRepository.save(accessLog);
-
-      console.log(
-        `[AccessLog] 创建访问日志成功: ${createAccessLogDto.ip} -> ${geoInfo.country}, ${geoInfo.city}`,
-      );
 
       return savedLog;
     } catch (error) {

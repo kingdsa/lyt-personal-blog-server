@@ -13,7 +13,6 @@ export class AccessLogController {
 
   @Get('stats')
   async getStats(): Promise<ApiResponse> {
-    console.log('[Controller] 匹配到 stats 路由');
     const result = await this.accessLogService.getStats();
     return {
       code: ResponseCode.SUCCESS,
@@ -26,7 +25,6 @@ export class AccessLogController {
   async getAccessLogs(
     @Query() query: GetAccessLogsQuery,
   ): Promise<ApiResponse> {
-    console.log('[Controller] 匹配到列表查询路由，参数:', query);
     const result = await this.accessLogService.getAccessLogs(query);
     return {
       code: ResponseCode.SUCCESS,
@@ -37,7 +35,6 @@ export class AccessLogController {
 
   @Get(':id')
   async getAccessLogById(@Param('id') id: string): Promise<ApiResponse> {
-    console.log('[Controller] 匹配到ID查询路由，ID:', id);
     const result = await this.accessLogService.getAccessLogById(id);
     return {
       code: ResponseCode.SUCCESS,

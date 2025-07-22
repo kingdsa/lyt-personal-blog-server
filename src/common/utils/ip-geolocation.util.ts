@@ -61,7 +61,6 @@ export class IpGeolocationUtil {
       // 检查缓存
       const cached = this.getFromCache(ip);
       if (cached) {
-        console.log(`[IP-API] 从缓存获取IP信息: ${ip}`);
         return cached;
       }
 
@@ -85,10 +84,6 @@ export class IpGeolocationUtil {
 
       // 缓存结果
       this.setToCache(ip, data);
-
-      console.log(
-        `[IP-API] 成功获取IP地理信息: ${ip} -> ${data.country}, ${data.regionName}, ${data.city}`,
-      );
 
       return data;
     } catch (error) {
@@ -175,7 +170,6 @@ export class IpGeolocationUtil {
    */
   public clearCache(): void {
     this.cache.clear();
-    console.log('[IP-API] 缓存已清空');
   }
 
   /**
