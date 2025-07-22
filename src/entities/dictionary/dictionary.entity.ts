@@ -21,14 +21,6 @@ export class Dictionary extends BaseEntity {
 
   @Column({
     type: 'varchar',
-    length: 100,
-    nullable: true,
-    comment: '字典值',
-  })
-  value?: string;
-
-  @Column({
-    type: 'varchar',
     length: 255,
     nullable: true,
     comment: '描述',

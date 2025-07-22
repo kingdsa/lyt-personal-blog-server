@@ -19,11 +19,6 @@ export class CreateDictionaryDto {
   name: string;
 
   @IsOptional()
-  @IsString({ message: '字典值必须是字符串' })
-  @Length(0, 100, { message: '字典值长度不能超过100个字符' })
-  value?: string;
-
-  @IsOptional()
   @IsString({ message: '描述必须是字符串' })
   @Length(0, 255, { message: '描述长度不能超过255个字符' })
   description?: string;

@@ -29,13 +29,16 @@ export class DictionaryService {
   }> {
     const { type, name } = createDictionaryDto;
 
-    // 检查同类型下名称是否已存在
-    const existingDictionary = await this.dictionaryRepository.findOne({
-      where: { type, name },
-    });
+    // 检查类型或名称是否已存在（只要有一个存在就不允许添加）
+    const existing = await this.dictionaryRepository
+      .createQueryBuilder('dict')
+      .where('dict.type = :type OR dict.name = :name', { type, name })
+      .getOne();
 
-    if (existingDictionary) {
-      throw new ConflictException('该类型下的字典名称已存在');
+    if (existing) {
+      const message =
+        existing.type === type ? '该字典类型已存在' : '该字典名称已存在';
+      throw new ConflictException(message);
     }
 
     try {
@@ -172,12 +175,20 @@ export class DictionaryService {
       const type = updateDictionaryDto.type || dictionary.type;
       const name = updateDictionaryDto.name || dictionary.name;
 
-      const existingDictionary = await this.dictionaryRepository.findOne({
-        where: { type, name },
-      });
+      // 检查类型或名称是否已存在
+      const existing = await this.dictionaryRepository
+        .createQueryBuilder('dict')
+        .where('(dict.type = :type OR dict.name = :name) AND dict.id != :id', {
+          type,
+          name,
+          id,
+        })
+        .getOne();
 
-      if (existingDictionary && existingDictionary.id !== id) {
-        throw new ConflictException('该类型下的字典名称已存在');
+      if (existing) {
+        const message =
+          existing.type === type ? '该字典类型已存在' : '该字典名称已存在';
+        throw new ConflictException(message);
       }
     }
 
