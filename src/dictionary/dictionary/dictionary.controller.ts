@@ -15,9 +15,9 @@ import {
   CreateDictionaryDto,
   UpdateDictionaryDto,
   QueryDictionaryDto,
-} from './dto';
-import { ResponseUtil } from '../common/utils';
-import { ApiResponse } from '../common';
+} from './dto/index';
+import { ResponseUtil } from '../../common/utils';
+import { ApiResponse } from '../../common';
 
 @Controller('dictionary')
 export class DictionaryController {

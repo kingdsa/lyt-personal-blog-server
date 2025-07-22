@@ -1,14 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { DictionaryController } from './dictionary.controller';
-import { DictionaryService } from './dictionary.service';
-import { Dictionary } from '../entities/dictionary/dictionary.entity';
+import { DictionaryModule as DictionarySubModule } from './dictionary/dictionary.module';
+import { DictionaryItemModule } from './dictionary-item/dictionary-item.module';
 import { CommonModule } from '../common/common.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Dictionary]), CommonModule],
-  controllers: [DictionaryController],
-  providers: [DictionaryService],
-  exports: [DictionaryService],
+  imports: [DictionarySubModule, DictionaryItemModule, CommonModule],
+  exports: [DictionarySubModule, DictionaryItemModule],
 })
 export class DictionaryModule {}
